@@ -54,7 +54,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     public function getApiToken()
     {
         $response = $this->httpClient->request(
-            $this->getHttpMethod(),
+            'POST',
             $this->getBaseUrl() . 'auth/token',
             ['Content-Type' => 'application/json'],
             json_encode([
@@ -64,7 +64,14 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
             ]),
         );
 
-        return json_decode($response->getBody()->getContents(), true)['data']['access_token'];
+
+        $decodedResponse = json_decode($response->getBody()->getContents(), true);
+
+        if ($response->getStatusCode() >= 400) {
+            throw new \Exception($decodedResponse['error']['code']);
+        }
+
+        return $decodedResponse['data']['access_token'];
     }
 
     // public function getEmail()

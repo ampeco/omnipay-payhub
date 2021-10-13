@@ -6,17 +6,20 @@ class DeleteCardRequest extends AbstractRequest
 {
     public function getEndpoint()
     {
-        return 'DeleteCard';
+        return 'cards';
+    }
+
+    public function getHttpMethod()
+    {
+        return 'DELETE';
     }
 
     public function getData()
     {
-        $this->validate('email', 'customerId', 'token');
+        $this->validate( 'token');
 
         return [
-            "email" => $this->getEmail(),
-            "customerId" => $this->getCustomerId(),
-            "cardToken" => $this->getToken(),
+            "token" => $this->getToken(),
         ];
     }
 }
