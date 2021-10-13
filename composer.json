@@ -1,0 +1,28 @@
+{
+    "name": "ampeco/omnipay-payhub",
+    "description": "Omnipay plugin for https://payhub.com.ua/",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Ampeco\\OmnipayPayhub\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Alexander Alexiev",
+            "email": "alexander.alexiev@ampeco.com"
+        },
+        {
+            "name": "Tihomir Tonov",
+            "email": "tihomir.tonov@ampeco.com"
+        },
+        {
+            "name": "Borislav Borisov",
+            "email": "borislav.borisov@ampeco.com"
+        }
+    ],
+    "require": {
+        "omnipay/common": "^3"
+    }
+}
