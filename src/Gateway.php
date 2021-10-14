@@ -72,10 +72,10 @@ class Gateway extends AbstractGateway
         return $this->createRequest(CreateCardRequest::class, $options);
     }
 
-    // public function deleteCard(array $options = []): RequestInterface
-    // {
-    //     return $this->createRequest(DeleteCardRequest::class, $options);
-    // }
+     public function deleteCard(array $options = []): RequestInterface
+     {
+         return $this->createRequest(DeleteCardRequest::class, $options);
+     }
 
     public function getCard(array $options = []): RequestInterface
     {
