@@ -7,6 +7,7 @@ use Ampeco\OmnipayPayhub\Message\CaptureRequest;
 use Ampeco\OmnipayPayhub\Message\PurchaseRequest;
 use Ampeco\OmnipayPayhub\Message\CreateCardRequest;
 use Ampeco\OmnipayPayhub\Message\DeleteCardRequest;
+use Ampeco\OmnipayPayhub\Message\GetCardRequest;
 use Ampeco\OmnipayPayhub\Message\ListTransactionsRequest;
 use Ampeco\OmnipayPayhub\Message\ListCardsRequest;
 use Ampeco\OmnipayPayhub\Message\Response;
@@ -76,10 +77,10 @@ class Gateway extends AbstractGateway
     //     return $this->createRequest(DeleteCardRequest::class, $options);
     // }
 
-    // public function listCards(array $options = []): RequestInterface
-    // {
-    //     return $this->createRequest(ListCardsRequest::class, $options);
-    // }
+    public function getCard(array $options = []): RequestInterface
+    {
+        return $this->createRequest(GetCardRequest::class, $options);
+    }
 
     // public function listTransactions(array $options = []): RequestInterface
     // {

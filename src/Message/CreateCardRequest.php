@@ -4,6 +4,21 @@ namespace Ampeco\OmnipayPayhub\Message;
 
 class CreateCardRequest extends AbstractRequest
 {
+    public function getLang()
+    {
+        return $this->getParameter('lang');
+    }
+
+    public function setLang($value)
+    {
+        $value = strtoupper($value);
+        if (! in_array($value, ['EN', 'UK', 'RU'])) {
+            $value = 'EN';
+        }
+
+        return $this->setParameter('lang', $value);
+    }
+
     public function getEndpoint()
     {
         return 'frames/links/cards/tokens';
@@ -27,7 +42,7 @@ class CreateCardRequest extends AbstractRequest
                     // "cancel" => "https://yourapp.test/payment/cancel"
                 ]
             ],
-            "lang" => "UK",
+            "lang" => $this->getLang() , // supported: EN | UK | RU
             // "title" => "Merchant name",
             // "description" => "Payment description",
             "merchant_config_id" => $this->getMerchantConfigId(),
