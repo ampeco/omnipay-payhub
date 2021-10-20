@@ -60,12 +60,10 @@ class Gateway extends AbstractGateway
     //     return $this->createRequest(VoidRequest::class, $options);
     // }
 
-    // public function purchase(array $options = []): RequestInterface
-    // {
-    //     return $this->createRequest(PurchaseRequest::class, array_merge($options, [
-    //         'processType' => static::PROCESS_TYPE_SALES,
-    //     ]));
-    // }
+    public function purchase(array $options = []): RequestInterface
+    {
+        return $this->createRequest(PurchaseRequest::class, $options);
+    }
 
     public function createCard(array $options = []): RequestInterface
     {

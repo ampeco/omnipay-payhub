@@ -48,7 +48,11 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
             json_encode($data),
         );
 
-        return $this->createResponse($httpResponse->getBody()->getContents(), $httpResponse->getHeaders());
+        return $this->createResponse(
+            $httpResponse->getBody()->getContents(),
+            $httpResponse->getHeaders(),
+            $httpResponse->getStatusCode(),
+        );
     }
 
     public function getApiToken()
@@ -99,9 +103,9 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     //     return $this->setParameter('transactionId', $this->prefix($value));
     // }
 
-    protected function createResponse($data, $headers = [])
+    protected function createResponse($data, $headers = [], $statusCode)
     {
-        return $this->response = new Response($this, $data, $headers);
+        return $this->response = new Response($this, $data, $headers, $statusCode >= 400);
     }
 
     protected function prefix($value)

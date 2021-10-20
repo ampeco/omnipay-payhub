@@ -22,16 +22,19 @@ class Response extends AbstractResponse implements ResponseInterface, RedirectRe
      */
     protected $headers = [];
 
-    public function __construct(RequestInterface $request, $data, $headers = [])
+    protected bool $hasError;
+
+    public function __construct(RequestInterface $request, $data, $headers = [], $hasError = false)
     {
         $this->request = $request;
         $this->data = json_decode($data, true);
         $this->headers = $headers;
+        $this->hasError = $hasError;
     }
 
     public function isSuccessful()
     {
-        return isset($this->data['id']);
+        return ! $this->hasError;
     }
 
     public function isRedirect()
