@@ -5,10 +5,11 @@ namespace Ampeco\OmnipayPayhub\Message;
 class GetCardResponse extends Response
 {
     const STATUS_ACTIVE = 'ACTIVE';
+    const STATUS_USED = 'USED';
 
     public function isSuccessful()
     {
-        return $this->data['status'] === self::STATUS_ACTIVE;
+        return in_array($this->data['status'], [self::STATUS_ACTIVE, self::STATUS_USED]);
     }
 
     public function getTransactionReference()

@@ -38,8 +38,8 @@ class CreateCardRequest extends AbstractRequest
                 // "create_short_url" => true,
                 "backurl" => [
                     "success" => $this->getReturnUrl(),
-                    // "error" => "https://yourapp.test/payment/error",
-                    // "cancel" => "https://yourapp.test/payment/cancel"
+                    "error" => $this->getReturnUrl(),
+                    "cancel" => $this->getReturnUrl(),
                 ]
             ],
             "lang" => $this->getLang() , // supported: EN | UK | RU
@@ -50,7 +50,7 @@ class CreateCardRequest extends AbstractRequest
             // "params" => [
             //     "shop_url" => "https://yourapp.test"
             // ],
-            "request_card_name" => true
+            "request_card_name" => false,
         ];
     }
 }
