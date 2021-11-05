@@ -53,14 +53,4 @@ trait CommonParameters
     {
         return $this->setParameter('merchantConfigId', $value);
     }
-
-    public function getTransactionPrefix()
-    {
-        return $this->getParameter('TransactionPrefix');
-    }
-
-    // public function setTransactionPrefix($value)
-    // {
-    //     return $this->setParameter('TransactionPrefix', $value);
-    // }
 }

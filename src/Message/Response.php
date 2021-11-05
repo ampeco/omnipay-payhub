@@ -9,32 +9,23 @@ use Omnipay\Common\Message\ResponseInterface;
 
 class Response extends AbstractResponse implements ResponseInterface, RedirectResponseInterface
 {
+    protected int $statusCode;
 
-    /**
-     * Request id
-     *
-     * @var string URL
-     */
-    protected $requestId = null;
-
-    /**
-     * @var array
-     */
-    protected $headers = [];
-
-    protected bool $hasError;
-
-    public function __construct(RequestInterface $request, $data, $headers = [], $hasError = false)
+    public function __construct(RequestInterface $request, $data, $statusCode)
     {
         $this->request = $request;
         $this->data = json_decode($data, true);
-        $this->headers = $headers;
-        $this->hasError = $hasError;
+        $this->statusCode = (int) $statusCode;
+    }
+
+    public function getRequest(): AbstractRequest
+    {
+        return $this->request;
     }
 
     public function isSuccessful()
     {
-        return ! $this->hasError;
+        return $this->statusCode < 400;
     }
 
     public function isRedirect()
@@ -44,15 +35,23 @@ class Response extends AbstractResponse implements ResponseInterface, RedirectRe
 
     public function getRedirectUrl()
     {
-        return isset($this->data['url']) ? $this->data['url'] : null;
+        return @$this->data['url'];
     }
 
     public function getTransactionReference()
     {
-        if (! $this->isSuccessful()) {
-            return null;
-        }
+        return @$this->data['id'];
+    }
 
-        return $this->data['id'];
+    public function getStatus()
+    {
+        return @$this->data['status'];
+    }
+
+    public function statusIs($statuses)
+    {
+        $statuses = is_array($statuses) ? $statuses : func_get_args();
+
+        return in_array($this->getStatus(), $statuses);
     }
 }

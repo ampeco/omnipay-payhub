@@ -21,35 +21,30 @@ class CreateCardRequest extends AbstractRequest
 
     public function getEndpoint()
     {
-        return 'frames/links/cards/tokens';
+        return 'frames/links/pga';
     }
 
     public function getData()
     {
-        $this->validate('transactionId', 'customerId', 'returnUrl');
+        $this->validate('transactionId', 'returnUrl', 'lang', 'description');
 
         return [
-            "client" => [
-                "id" => $this->getCustomerId(),
-            ],
             "external_id" => $this->getTransactionId(),
             "options" => [
-                // "ttl" => 0,
-                // "create_short_url" => true,
+                "ttl" => 0,
                 "backurl" => [
                     "success" => $this->getReturnUrl(),
                     "error" => $this->getReturnUrl(),
                     "cancel" => $this->getReturnUrl(),
-                ]
+                ],
             ],
-            "lang" => $this->getLang() , // supported: EN | UK | RU
+            "amount" => $this->getGateway()->getCreateCardAmount() * 100,
+            "lang" => $this->getLang(),
             // "title" => "Merchant name",
-            // "description" => "Payment description",
+            "description" => $this->getDescription(),
+            "short_description" => $this->getDescription(),
             "merchant_config_id" => $this->getMerchantConfigId(),
             "config_id" => $this->getConfigId(),
-            // "params" => [
-            //     "shop_url" => "https://yourapp.test"
-            // ],
             "request_card_name" => false,
         ];
     }

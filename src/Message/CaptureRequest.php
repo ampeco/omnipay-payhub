@@ -6,18 +6,17 @@ class CaptureRequest extends AbstractRequest
 {
     public function getEndpoint()
     {
-        return 'Postauth';
+        $this->validate('transactionId');
+
+        return "pga/transactions/{$this->getTransactionId()}/complete_hold";
     }
 
     public function getData()
     {
-        $this->validate('transactionId', 'amount', 'currency');
+        $this->validate('amount');
 
         return [
-            "orderId" => $this->getTransactionId(),
-            "totalAmount" => $this->getAmount(),
-            "currency" => $this->getCurrency(),
-            "paymentInstrument"=> "StoredCard",
+            "amount" => $this->getAmount() * 100,
         ];
     }
 }

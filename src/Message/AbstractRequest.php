@@ -3,6 +3,7 @@
 namespace Ampeco\OmnipayPayhub\Message;
 
 use Ampeco\OmnipayPayhub\CommonParameters;
+use Ampeco\OmnipayPayhub\Gateway;
 
 abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 {
@@ -11,7 +12,20 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     const ENDPOINT_PRODUCTION = 'https://rlyeh.payhub.com.ua/';
     const ENDPOINT_TESTING = 'https://innsmouth.payhub.com.ua/';
 
+    protected ?Gateway $gateway;
+
     abstract public function getEndpoint();
+
+    public function setGateway(Gateway $gateway)
+    {
+        $this->gateway = $gateway;
+        return $this;
+    }
+
+    public function getGateway()
+    {
+        return $this->gateway;
+    }
 
     public function getBaseUrl()
     {
@@ -20,9 +34,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
     public function getHeaders(): array
     {
-        $headers = [];
-
-        return $headers;
+        return [];
     }
 
     public function getHttpMethod()
@@ -37,7 +49,6 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     {
         $headers = array_merge($this->getHeaders(), [
             'Authorization' => 'Bearer ' . $this->getApiToken(),
-            // 'MerchantCode' => $this->getMerchantCode(),
             'Content-Type' => 'application/json',
         ]);
 
@@ -50,7 +61,6 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
         return $this->createResponse(
             $httpResponse->getBody()->getContents(),
-            $httpResponse->getHeaders(),
             $httpResponse->getStatusCode(),
         );
     }
@@ -68,7 +78,6 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
             ]),
         );
 
-
         $decodedResponse = json_decode($response->getBody()->getContents(), true);
 
         if ($response->getStatusCode() >= 400) {
@@ -78,42 +87,15 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $decodedResponse['data']['access_token'];
     }
 
-    // public function getEmail()
-    // {
-    //     return $this->getParameter('email');
-    // }
-
-    // public function setEmail($value)
-    // {
-    //     return $this->setParameter('email', $value);
-    // }
-
-    public function getCustomerId()
+    protected function createResponse($data, $statusCode)
     {
-        return (string) $this->getParameter('customerId');
+        $responseClass = $this->getResponseClass();
+
+        return $this->response = new $responseClass($this, $data, $statusCode);
     }
 
-    public function setCustomerId($value)
+    protected function getResponseClass()
     {
-        return $this->setParameter('customerId', $this->prefix($value));
-    }
-
-    // public function setTransactionId($value)
-    // {
-    //     return $this->setParameter('transactionId', $this->prefix($value));
-    // }
-
-    protected function createResponse($data, $headers = [], $statusCode)
-    {
-        return $this->response = new Response($this, $data, $headers, $statusCode >= 400);
-    }
-
-    protected function prefix($value)
-    {
-        if ($this->getTestMode() && !is_null($this->getTransactionPrefix())) {
-            return $this->getTransactionPrefix() . $value;
-        }
-
-        return $value;
+        return Response::class;
     }
 }

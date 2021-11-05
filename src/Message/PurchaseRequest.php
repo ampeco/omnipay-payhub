@@ -4,6 +4,16 @@ namespace Ampeco\OmnipayPayhub\Message;
 
 class PurchaseRequest extends AbstractRequest
 {
+    public function setHold($value)
+    {
+        $this->setParameter('hold', (bool) $value);
+    }
+
+    public function getHold()
+    {
+        return $this->getParameter('hold');
+    }
+
     public function getEndpoint()
     {
         return 'pga/transactions';
@@ -11,48 +21,26 @@ class PurchaseRequest extends AbstractRequest
 
     public function getData()
     {
-        $this->validate('transactionId', 'customerId', 'amount', 'token', 'description');
-
-        info('AMOUNT', ['amount' => $this->getAmount()]);
+        $this->validate('transactionId', 'amount', 'token', 'description', 'hold');
 
         return [
-            "amount" => $this->getAmount() * 100,
-            "external_id" => $this->getTransactionId(), // "7ef38378-951f-4139-8119-3f270d91fc1b",
+            "amount" => $this->getAmountInteger(),
+            "external_id" => $this->getTransactionId(),
+            "payer" => [
+                "source" => "RECURRENT_TRANSACTION",
+                "transaction_id" => $this->getToken(),
+            ],
             "description" => $this->getDescription(),
             "short_description" => $this->getDescription(),
-            "client_ip" => "77.70.127.37",
+            "client_ip" => "127.0.0.1",
             "merchant_config_id" => $this->getMerchantConfigId(),
-            "payer" => [
-                "source" => "WALLET",
-                "value" => $this->getToken(),
-                "client_id" => $this->getCustomerId(),
-                "expire" => "0123",
-                "cvv" => "107"
-            ],
-
-            // "orderId" => $this->getTransactionId(),
-            // "totalAmount" => $this->getAmount(),
-            // "currency" => $this->getCurrency(),
-            // "customerInfo" => [
-            //     "email" => $this->getEmail(),
-            //     "customerId" => $this->getCustomerId(),
-            // ],
-            // "paymentInstrument"=> "StoredCard",
-            // "paymentInstrumentInfo" => [
-            //     "storedCard" => [
-            //         "processType" => $this->getProcessType(),
-            //         "cardToken" => $this->getToken(),
-            //         "use3DSecure" => false,
-            //         // "posAccount" => [
-            //         //     "id" => $this->getPosId(),
-            //         // ],
-            //     ]
-            // ],
-            // "basketItems"=> [
-            //     [
-            //         "name" => $this->getDescription(),
-            //     ]
-            // ]
+            "config_id" => $this->getConfigId(),
+            "hold" => $this->getHold(),
         ];
+    }
+
+    protected function getResponseClass()
+    {
+        return PurchaseResponse::class;
     }
 }

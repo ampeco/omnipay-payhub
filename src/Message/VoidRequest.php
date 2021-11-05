@@ -6,16 +6,17 @@ class VoidRequest extends AbstractRequest
 {
     public function getEndpoint()
     {
-        return 'Cancel';
+        $this->validate('transactionId');
+
+        return "pga/transactions/{$this->getTransactionId()}/refund";
     }
 
     public function getData()
     {
-        $this->validate('transactionId');
+        $this->validate('amount');
 
         return [
-            "orderId" => $this->getTransactionId(),
-            "paymentInstrument"=> "StoredCard",
+            'amount' => $this->getAmountInteger(),
         ];
     }
 }
