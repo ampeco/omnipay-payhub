@@ -48,6 +48,11 @@ class Response extends AbstractResponse implements ResponseInterface, RedirectRe
         return @$this->data['status'];
     }
 
+    public function getMessage()
+    {
+        return @$this->data['message'];
+    }
+
     public function statusIs($statuses)
     {
         $statuses = is_array($statuses) ? $statuses : func_get_args();

@@ -21,14 +21,18 @@ class CreateCardRequest extends AbstractRequest
 
     public function getEndpoint()
     {
-        return 'frames/links/pga';
+        if ($this->is2DS()) {
+            return 'frames/links/cards/tokens';
+        } else {
+            return 'frames/links/pga';
+        }
     }
 
     public function getData()
     {
         $this->validate('transactionId', 'returnUrl', 'lang', 'description');
 
-        return [
+        $params = [
             "external_id" => $this->getTransactionId(),
             "options" => [
                 "ttl" => 0,
@@ -38,7 +42,6 @@ class CreateCardRequest extends AbstractRequest
                     "cancel" => $this->getReturnUrl(),
                 ],
             ],
-            "amount" => $this->getGateway()->getCreateCardAmount() * 100,
             "lang" => $this->getLang(),
             // "title" => "Merchant name",
             "description" => $this->getDescription(),
@@ -47,5 +50,15 @@ class CreateCardRequest extends AbstractRequest
             "config_id" => $this->getConfigId(),
             "request_card_name" => false,
         ];
+
+        if ($this->is2DS()) {
+            $params['client'] = [
+                'id' => $this->getUserId(),
+            ];
+        } else {
+            $params['amount'] = $this->getGateway()->getCreateCardAmount() * 100;
+        }
+
+        return $params;
     }
 }

@@ -24,6 +24,9 @@ class Gateway extends AbstractGateway
 {
     use CommonParameters;
 
+    const VERSION_3DS = '3DS';
+    const VERSION_2DS = '2DS';
+
     public function getName()
     {
         return 'Payhub';

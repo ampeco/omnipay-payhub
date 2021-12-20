@@ -23,20 +23,32 @@ class PurchaseRequest extends AbstractRequest
     {
         $this->validate('transactionId', 'amount', 'token', 'description', 'hold');
 
-        return [
+        $params = [
             "amount" => $this->getAmountInteger(),
             "external_id" => $this->getTransactionId(),
-            "payer" => [
-                "source" => "RECURRENT_TRANSACTION",
-                "transaction_id" => $this->getToken(),
-            ],
             "description" => $this->getDescription(),
             "short_description" => $this->getDescription(),
             "client_ip" => "127.0.0.1",
-            "merchant_config_id" => $this->getMerchantConfigId(),
-            "config_id" => $this->getConfigId(),
             "hold" => $this->getHold(),
         ];
+
+        if ($this->is2DS()) {
+            $params["merchant_config_id"] = $this->getTransactionMerchantConfigId();
+            $params["payer"] = [
+                "source" => "WALLET",
+                "value" => $this->getToken(),
+                "client_id" => $this->getUserId(),
+            ];
+        } else {
+            $params["config_id"] = $this->getConfigId();
+            $params["merchant_config_id"] = $this->getMerchantConfigId();
+            $params["payer"] = [
+                "source" => "RECURRENT_TRANSACTION",
+                "transaction_id" => $this->getToken(),
+            ];
+        }
+
+        return $params;
     }
 
     protected function getResponseClass()

@@ -6,22 +6,32 @@ class DeleteCardRequest extends AbstractRequest
 {
     public function getEndpoint()
     {
-        $this->validate('transactionReference');
+        if ($this->is2DS()) {
+            return "frames/links/cards";
+        } else {
+            $this->validate('transactionReference');
 
-        return "frames/links/pga/{$this->getTransactionReference()}/refund";
+            return "frames/links/pga/{$this->getTransactionReference()}/refund";
+        }
     }
 
     public function getHttpMethod()
     {
-        return 'PUT';
+        return $this->is2DS() ? 'DELETE' : 'PUT';
     }
 
     public function getData()
     {
         $this->validate('token');
 
-        return [
-            "transaction_id" => $this->getToken(),
-        ];
+        if ($this->is2DS()) {
+            return [
+                "token" => $this->getToken(),
+            ];
+        } else {
+            return [
+                "transaction_id" => $this->getToken(),
+            ];
+        }
     }
 }
