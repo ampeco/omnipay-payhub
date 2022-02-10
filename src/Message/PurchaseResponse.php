@@ -49,7 +49,8 @@ class PurchaseResponse extends TransactionResponse
     {
         /** @var Response */
         $response = $this->getGateway()->void([
-            'transactionId' => $this->getTransactionReference(),
+            'transactionReference' => $this->getTransactionReference(),
+            'amount' => $this->request->getData()['amount'],
         ])->send();
 
         if ($response->statusIs(TransactionResponse::STATUS_REFUNDED)) {
