@@ -4,6 +4,7 @@ namespace Ampeco\OmnipayPayhub\Message;
 
 use Ampeco\OmnipayPayhub\Gateway;
 use Omnipay\Common\Message\RequestInterface;
+use Omnipay\Common\Message\ResponseInterface;
 
 class PurchaseResponse extends TransactionResponse
 {
@@ -64,13 +65,34 @@ class PurchaseResponse extends TransactionResponse
 
     private function getTransaction(): TransactionResponse
     {
-        return $this->getGateway()->getTransaction([
+        $response = $this->getGateway()->getTransaction([
             'transactionId' => $this->getTransactionReference(),
         ])->send();
+
+        $this->tryToLog($response);
+
+        return $response;
     }
 
     private function getGateway(): Gateway
     {
         return $this->getRequest()->getGateway();
+    }
+
+    private function tryToLog(ResponseInterface $response)
+    {
+        if (function_exists('info')) {
+            $request = $response->getRequest();
+            $parsedClass = explode('\\', get_class($request));
+            $method = array_pop($parsedClass);
+            $responseStatus = $response->isSuccessful() ? 'Success' : ($response->isCancelled() ? 'Canceled' : 'Failure');
+
+            info("Payhub: Call {$method} => {$responseStatus}", [
+                'payment_processor' => 'Payhub',
+                'request' => $request->getData(),
+                'response' => $response->getData(),
+                'method' => get_class($request),
+            ]);
+        }
     }
 }
