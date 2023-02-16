@@ -81,7 +81,8 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         $decodedResponse = json_decode($response->getBody()->getContents(), true);
 
         if ($response->getStatusCode() >= 400) {
-            throw new \Exception($decodedResponse['error']['code']);
+            $message = $decodedResponse['error']['code'] ?? 'Error while fetching api token';
+            throw new \Exception($message);
         }
 
         return $decodedResponse['data']['access_token'];
