@@ -20,6 +20,10 @@
         {
             "name": "Borislav Borisov",
             "email": "borislav.borisov@ampeco.com"
+        },
+        {
+            "name": "Levent Yumerov",
+            "email": "levent.yumerov@ampeco.com"
         }
     ],
     "require": {

@@ -46,6 +46,7 @@ class PurchaseRequest extends AbstractRequest
                 "source" => "RECURRENT_TRANSACTION",
                 "transaction_id" => $this->getToken(),
             ];
+            $params["3ds2_supported"] = "true";
         }
 
         return $params;
