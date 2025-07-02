@@ -7,7 +7,10 @@ class CreateCardResponse2DS extends Response implements CreateCardResponseInterf
     public function isSuccessful(): bool
     {
         return parent::isSuccessful()
-            && $this->statusIs(static::STATUS_ACTIVE, static::STATUS_USED);
+            && $this->statusIs(static::STATUS_ACTIVE, static::STATUS_USED)
+            && isset($this->data['token'])
+            && isset($this->data['masked_pan'])
+            && isset($this->data['card_name']);
     }
 
     public function getTransactionReference(): ?string
@@ -15,18 +18,18 @@ class CreateCardResponse2DS extends Response implements CreateCardResponseInterf
         return @$this->data['frame_id'];
     }
 
-    public function token(): ?string
+    public function token(): string
     {
-        return @$this->data['token'];
+        return $this->data['token'];
     }
 
-    public function maskedCardNumber(): ?string
+    public function maskedCardNumber(): string
     {
-        return @$this->data['masked_pan'];
+        return $this->data['masked_pan'];
     }
 
-    public function cardType(): ?string
+    public function cardType(): string
     {
-        return @$this->data['card_name'];
+        return $this->data['card_name'];
     }
 }
