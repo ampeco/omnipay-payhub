@@ -9,8 +9,11 @@ class CreateCardResponse2DS extends Response implements CreateCardResponseInterf
         return parent::isSuccessful()
             && $this->statusIs(static::STATUS_ACTIVE, static::STATUS_USED)
             && isset($this->data['token'])
+            && !empty($this->data['token'])
             && isset($this->data['masked_pan'])
-            && isset($this->data['card_name']);
+            && !empty($this->data['masked_pan'])
+            && isset($this->data['card_name'])
+            && !empty($this->data['card_name']);
     }
 
     public function getTransactionReference(): ?string

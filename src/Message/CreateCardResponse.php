@@ -12,8 +12,11 @@ class CreateCardResponse extends Response implements CreateCardResponseInterface
             && isset($this->data['transaction']['status'])
             && in_array($this->data['transaction']['status'], [TransactionResponse::STATUS_PROCESSED])
             && isset($this->data['transaction']['transaction_id'])
+            && !empty($this->data['transaction']['transaction_id'])
             && isset($this->data['transaction']['card_from_hash'])
-            && isset($this->data['transaction']['payment_system']);
+            && !empty($this->data['transaction']['card_from_hash'])
+            && isset($this->data['transaction']['payment_system'])
+            && !empty($this->data['transaction']['payment_system']);
     }
 
     public function token(): string
